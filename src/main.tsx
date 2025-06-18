@@ -16,11 +16,11 @@ function Root({children, className = ""} : RootElement): React.ReactElement {
     </div>
   )
 }
-
+//bg-[#222426
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Router>
-      <Root className="flex min-w-screen min-h-screen bg-[#222426] text-[#F2F2F2] ">
+      <Root className="flex min-w-screen min-h-screen bg-zinc-900 text-[#F2F2F2] ">
         <App />
       </Root>
     </Router>

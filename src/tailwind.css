@@ -4,3 +4,9 @@
 @theme{
     --font-poppins: 'Poppins';
 }
+
+/* vanilla css */
+
+.all-unset{
+    all: unset
+}

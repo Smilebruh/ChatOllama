@@ -1,9 +1,10 @@
 import React from 'react'
-
+import ChatPage from './ChatPage'
+//bg-[#0D0D0D]
 export default function App(): React.ReactElement{
   return (
-    <div>
-      <nav className="flex flex-col items-center h-full w-70 bg-[#0D0D0D] rounded-r-sm font-poppins">
+    <div className="flex w-full">
+      <nav className="flex flex-col items-center h-full w-70 bg-neutral-950 rounded-r-sm font-poppins">
         <div className="flex w-[90%] font-bold text-[20px] m-2 mt-4 gap-6">
           <img src="/images/ollama_logo.png" className="ml-2 w-8 h-8"/>
           <h1 className='flex justify-center items-center h-8'>ChatOllama</h1>
@@ -17,6 +18,7 @@ export default function App(): React.ReactElement{
           <h1 className="ml-2 mt-8 text-[#A6A6A6] select-none">Chats</h1>
         </div>
       </nav>
+      <ChatPage />
     </div>
 )
 }
