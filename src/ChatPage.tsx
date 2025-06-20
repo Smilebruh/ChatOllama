@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Select, { StylesConfig } from "react-select";
 import ArrowUp from "/public/images/arrow-up.svg?react";
+import { sendMassage } from "./module";
 
 interface Options {
   value: string;
@@ -10,8 +11,38 @@ interface Options {
 export default function ChatPage(): React.ReactElement {
   const [inputText, setInputText] = useState("");
   const text: React.RefObject<HTMLTextAreaElement> = useRef(null);
-  const sendButton: React.RefObject<HTMLButtonElement> = useRef(null);
+  const arrowUpColor = useRef("#52525c");
+  const allowToSend = useRef(false);
   const [currentModel, setCurrentModel] = useState("");
+  
+  const runSendButton = () => {
+    if(!allowToSend.current) return;
+    sendMassage(text,currentModel);
+    arrowUpColor.current = "#52525c";
+    setInputText("");
+  }
+
+  const textAreaKeyHandler = (
+    element: React.KeyboardEvent<HTMLTextAreaElement>
+  ): void => {
+    if (element.key === "Enter") element.preventDefault();
+
+    if (element.key === "Enter" && !element.shiftKey) {
+      runSendButton();
+    }
+
+    if (element.key === "Enter" && element.shiftKey) {
+      const currentTarget = element.target as HTMLTextAreaElement;
+      const { selectionStart, value, selectionEnd } = currentTarget;
+      let newVal: string =
+        value.slice(0, selectionStart) + "\n" + value.slice(selectionEnd);
+      currentTarget.value = newVal;
+      currentTarget.selectionStart = currentTarget.selectionEnd =
+        selectionEnd + 1;
+      setInputText(currentTarget.value);
+    }
+  };
+
 
   const customStyles: StylesConfig<Options, false> = {
     control: (defaultStyles) => {
@@ -19,8 +50,8 @@ export default function ChatPage(): React.ReactElement {
         ...defaultStyles,
         backgroundColor: "none",
         border: "none",
-        boxShadow: 'none',
-        width: '200px'
+        boxShadow: "none",
+        width: "200px",
       };
     },
     singleValue: (defaultStyles) => {
@@ -32,7 +63,7 @@ export default function ChatPage(): React.ReactElement {
     option: (defaultStyles, states) => {
       return {
         ...defaultStyles,
-        backgroundColor: states.isFocused? '#3f3f46' : 'none'
+        backgroundColor: states.isFocused ? "#3f3f46" : "none",
       };
     },
     menu: (defaultStyles) => {
@@ -44,6 +75,7 @@ export default function ChatPage(): React.ReactElement {
       };
     },
   };
+
   const modelOptions: Options[] = [
     {
       value: "llama3:8b",
@@ -60,10 +92,12 @@ export default function ChatPage(): React.ReactElement {
   ];
 
   useEffect(() => {
-    if (!text.current || text.current.scrollHeight > 192) return;
+    if (!text.current) return;
 
+    if (text.current.scrollHeight > 192) return;
     text.current.style.height = "auto";
     text.current.style.height = `${text.current.scrollHeight}px`;
+    allowToSend.current = !!text.current.value.replaceAll(/\s/g, "");
   }, [inputText]);
 
   return (
@@ -80,25 +114,34 @@ export default function ChatPage(): React.ReactElement {
           placeholder="Select a model"
         />
       </div>
-      <h1 className="flex justify-center h-15 w-1/2 text-[30px] mt-65">
+      <h1 className="flex justify-center h-15 w-1/2 text-[30px] mt-40">
         How can I help with ?
       </h1>
-      <div className="flex items-center min-w-1/2 min-h-16 rounded-2xl bg-zinc-700">
-        <textarea
-          ref={text}
-          onChange={(e) => {
-            setInputText(e.target.value);
-          }}
-          className="resize-none w-[85%] mr-7 h-16 pl-5 focus:outline-none overflow-hidden my-4"
-          rows={1}
-          placeholder="ask anything"
-        />
-        <div className="focus:outline-none flex justify-center items-center min-h-[80%]">
+      <div className="inline-flex flex-col justify-center min-w-1/2 min-h-16 rounded-2xl bg-zinc-700">
+        <div className="flex w-full min-h-10 mr-7 px-5 mt-4">
+          <textarea
+            ref={text}
+            onKeyDown={textAreaKeyHandler}
+            onChange={(e) => {
+              arrowUpColor.current = !!e.target.value.replaceAll(/\s/g, "")
+                ? "#F2F2F2"
+                : "#52525c";
+              setInputText(e.target.value);
+            }}
+            className="resize-none w-full h-full focus:outline-none overflow-hidden"
+            rows={1}
+            placeholder="ask anything"
+          />
+        </div>
+        <div className="focus:outline-none flex justify-end items-center w-full h-7 mb-4">
           <button
-            ref={sendButton}
-            className="flex w-10 h-10 rounded-full cursor-pointer focus:outline-none"
+            className="flex w-7 h-7 rounded-full cursor-pointer focus:outline-none mr-5"
+            onClick={runSendButton}
           >
-            <ArrowUp className="flex w-full h-full " />
+            <ArrowUp
+              fill={arrowUpColor.current ?? ""}
+              className="flex w-full h-full"
+            />
           </button>
         </div>
       </div>
