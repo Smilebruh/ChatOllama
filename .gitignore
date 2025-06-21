@@ -14,6 +14,8 @@ dist-ssr
 gitpush.py
 buildPy.sh
 ollama_api.spec
+build 
+src-tauri/binaries/
 
 # Editor directories and files
 .vscode/*
