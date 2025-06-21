@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 gitpush.py
+buildPy.sh
+ollama_api.spec
 
 # Editor directories and files
 .vscode/*

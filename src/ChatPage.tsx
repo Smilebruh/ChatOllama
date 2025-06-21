@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Select, { StylesConfig } from "react-select";
 import ArrowUp from "/public/images/arrow-up.svg?react";
-import { sendMassage } from "./module";
+import { sendMassage, start_server } from "./module";
 
 interface Options {
   value: string;
@@ -29,6 +29,7 @@ export default function ChatPage(): React.ReactElement {
 
     if (element.key === "Enter" && !element.shiftKey) {
       runSendButton();
+      return;
     }
 
     if (element.key === "Enter" && element.shiftKey) {
@@ -99,6 +100,10 @@ export default function ChatPage(): React.ReactElement {
     text.current.style.height = `${text.current.scrollHeight}px`;
     allowToSend.current = !!text.current.value.replaceAll(/\s/g, "");
   }, [inputText]);
+
+  useEffect(()=>{
+    start_server()
+  })
 
   return (
     <main className="flex flex-col items-center w-[calc(100%-280px)]">

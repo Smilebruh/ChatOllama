@@ -1,6 +1,6 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 // use surrealdb::{Sureal, engine::local::RocksDb} ;
-
+use tauri_plugin_shell::init as initShell;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -11,8 +11,8 @@ fn greet(name: &str) -> String {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_websocket::init())
+        .plugin(initShell())
         .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_python::init_and_register(vec!["isModelInstalled", "runModel"]))
         .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
