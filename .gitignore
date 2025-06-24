@@ -12,10 +12,11 @@ dist
 dist-ssr
 *.local
 gitpush.py
-buildPy.sh
 ollama_api.spec
 build 
-src-tauri/binaries/
+src-tauri/target
+src-tauri/binaries
+src-python/venv
 
 # Editor directories and files
 .vscode/*

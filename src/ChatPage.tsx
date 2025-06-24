@@ -101,10 +101,6 @@ export default function ChatPage(): React.ReactElement {
     allowToSend.current = !!text.current.value.replaceAll(/\s/g, "");
   }, [inputText]);
 
-  useEffect(()=>{
-    start_server()
-  })
-
   return (
     <main className="flex flex-col items-center w-[calc(100%-280px)]">
       <div className="sticky top-0 flex justify-start w-full h-20">

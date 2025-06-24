@@ -11,7 +11,7 @@
     "websocket:default",
     "shell:default",       
     {
-      "identifier": "shell:allow-spawn",
+      "identifier": "shell:allow-execute",
       "allow": [
         {
           "name": "binaries/ollama_api",

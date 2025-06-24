@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ChatPage from './ChatPage'
+import { start_server } from './module'
 //bg-[#0D0D0D]
 export default function App(): React.ReactElement{
+  useEffect(()=>{
+    start_server()
+  })
   return (
     <div className="flex w-full">
       <nav className="flex flex-col items-center h-full w-70 bg-neutral-950 rounded-r-sm font-poppins">
