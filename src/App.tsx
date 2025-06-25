@@ -1,11 +1,19 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import ChatPage from './ChatPage'
-import { start_server } from './module'
-//bg-[#0D0D0D]
+import { start_server } from './API_Handler'
+
+
+
 export default function App(): React.ReactElement{
+  const hasRun = useRef(false);
+
   useEffect(()=>{
-    start_server()
+    if(hasRun.current) return;
+    hasRun.current = true;
+    start_server();
+    console.log("server has run")
   })
+
   return (
     <div className="flex w-full">
       <nav className="flex flex-col items-center h-full w-70 bg-neutral-950 rounded-r-sm font-poppins">

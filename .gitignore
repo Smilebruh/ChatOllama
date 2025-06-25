@@ -12,11 +12,8 @@ dist
 dist-ssr
 *.local
 gitpush.py
-ollama_api.spec
 build 
-src-tauri/target
-src-tauri/binaries
-src-python/venv
+ollama_api-x86_64-unknown-linux-gnu.spec
 
 # Editor directories and files
 .vscode/*

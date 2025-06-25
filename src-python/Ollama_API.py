@@ -1,16 +1,21 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit
+from Model import runModel
+from engineio.async_drivers import eventlet
 
 app = Flask(__name__)
-sockIO = SocketIO(app)
-
-def start_server():
-    global app
-    app.run(debug=True, port=11435)
+socketio = SocketIO(app, async_mode='eventlet',cors_allowed_origins='*')
 
 @app.route('/')
-def test():
-    return "<h1>hello world </h1>"
+def index():
+    return "ChatOllama ran on this port"
 
-if __name__ == "__main__":
-    start_server()
+@socketio.on('chatToModel')
+def run_model(model: str,message: str):
+    for model_output in runModel(model, message):
+        socketio.emit('modelMSG',model_output)
+        socketio.sleep(0)
+
+def start_server():
+    global socketio
+    socketio.run(app,debug=True, port=11435)

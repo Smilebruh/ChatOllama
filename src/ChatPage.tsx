@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Select, { StylesConfig } from "react-select";
 import ArrowUp from "/public/images/arrow-up.svg?react";
-import { sendMassage, start_server } from "./module";
+// import { sendMassage, start_server } from "./module";
 
 interface Options {
   value: string;
@@ -17,7 +17,7 @@ export default function ChatPage(): React.ReactElement {
   
   const runSendButton = () => {
     if(!allowToSend.current) return;
-    sendMassage(text,currentModel);
+    // sendMassage(text,currentModel);
     arrowUpColor.current = "#52525c";
     setInputText("");
   }
