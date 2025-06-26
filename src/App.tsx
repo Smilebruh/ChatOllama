@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import ChatPage from './ChatPage'
-import { start_server } from './API_Handler'
-
+import { makeConnection } from './API_Handler'
+import { greet } from './UI_Handler';
+import { initSettings } from './DB_Handler';
 
 
 export default function App(): React.ReactElement{
@@ -10,8 +11,17 @@ export default function App(): React.ReactElement{
   useEffect(()=>{
     if(hasRun.current) return;
     hasRun.current = true;
-    start_server();
-    console.log("server has run")
+
+    //init ChatOllama settings
+    initSettings();
+
+    //Init API server connection
+    (async ()=> {
+      globalThis.socketio = await makeConnection();
+    })();
+
+    //greet from Alex :)
+    greet("alexstyle");
   })
 
   return (

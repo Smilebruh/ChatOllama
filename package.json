@@ -11,10 +11,15 @@
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
+    "@fontsource/poppins": "^5.2.6",
     "@tauri-apps/api": "^2.5.0",
     "@tauri-apps/plugin-opener": "^2.3.0",
     "@tauri-apps/plugin-shell": "^2.2.2",
+    "@tauri-apps/plugin-sql": "~2.3.0",
+    "@tauri-apps/plugin-store": "~2.3.0",
     "@tauri-apps/plugin-websocket": "~2.3.1",
+    "@types/tcp-port-used": "^1.0.4",
+    "is-port-reachable": "^4.0.0",
     "ollama": "^0.5.16",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -22,6 +27,7 @@
     "react-select": "^5.10.1",
     "shell": "link:@tauri-apps/api/shell",
     "socket.io-client": "^4.8.1",
+    "sweetalert2": "^11.22.1",
     "tauri-plugin-python-api": "^0.3.4"
   },
   "devDependencies": {

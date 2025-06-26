@@ -1,96 +1,75 @@
 import React, { useRef, useEffect, useState } from "react";
 import Select, { StylesConfig } from "react-select";
 import ArrowUp from "/public/images/arrow-up.svg?react";
-// import { sendMassage, start_server } from "./module";
+import { runSendButton, textAreaKeyHandler } from "./UI_Handler";
 
 interface Options {
   value: string;
   label: string;
 }
 
+const customStyles: StylesConfig<Options, false> = {
+  control: (defaultStyles) => {
+    return {
+      ...defaultStyles,
+      backgroundColor: "none",
+      border: "none",
+      boxShadow: "none",
+      width: "200px",
+    };
+  },
+  singleValue: (defaultStyles) => {
+    return {
+      ...defaultStyles,
+      color: lightColor,
+    };
+  },
+  option: (defaultStyles, states) => {
+    return {
+      ...defaultStyles,
+      backgroundColor: states.isFocused ? "#3f3f46" : "none",
+    };
+  },
+  menu: (defaultStyles) => {
+    return {
+      ...defaultStyles,
+      backgroundColor: "none",
+      border: "none",
+      color: lightColor,
+    };
+  },
+};
+
+const modelOptions: Options[] = [
+  {
+    value: "llama3.1:8b",
+    label: "Llama 3.1",
+  },
+  {
+    value: "qwen2.5-coder:latest",
+    label: "Qwen 2.5 coder",
+  },
+  {
+    value: "qwen2.5vl:latest",
+    label: "Qwen 2.5 vl",
+  },
+];
+
 export default function ChatPage(): React.ReactElement {
   const [inputText, setInputText] = useState("");
-  const text: React.RefObject<HTMLTextAreaElement> = useRef(null);
-  const arrowUpColor = useRef("#52525c");
-  const allowToSend = useRef(false);
   const [currentModel, setCurrentModel] = useState("");
-  
-  const runSendButton = () => {
-    if(!allowToSend.current) return;
-    // sendMassage(text,currentModel);
-    arrowUpColor.current = "#52525c";
-    setInputText("");
-  }
+  const text = useRef<HTMLTextAreaElement>(null);
+  const arrowUpColor = useRef<string>(darkColor);
+  const allowToSend = useRef<boolean>(false);
+  const alreadyMsg = useRef<boolean>(false);
 
-  const textAreaKeyHandler = (
-    element: React.KeyboardEvent<HTMLTextAreaElement>
-  ): void => {
-    if (element.key === "Enter") element.preventDefault();
-
-    if (element.key === "Enter" && !element.shiftKey) {
-      runSendButton();
-      return;
-    }
-
-    if (element.key === "Enter" && element.shiftKey) {
-      const currentTarget = element.target as HTMLTextAreaElement;
-      const { selectionStart, value, selectionEnd } = currentTarget;
-      let newVal: string =
-        value.slice(0, selectionStart) + "\n" + value.slice(selectionEnd);
-      currentTarget.value = newVal;
-      currentTarget.selectionStart = currentTarget.selectionEnd =
-        selectionEnd + 1;
-      setInputText(currentTarget.value);
-    }
-  };
-
-
-  const customStyles: StylesConfig<Options, false> = {
-    control: (defaultStyles) => {
-      return {
-        ...defaultStyles,
-        backgroundColor: "none",
-        border: "none",
-        boxShadow: "none",
-        width: "200px",
-      };
-    },
-    singleValue: (defaultStyles) => {
-      return {
-        ...defaultStyles,
-        color: "#F2F2F2",
-      };
-    },
-    option: (defaultStyles, states) => {
-      return {
-        ...defaultStyles,
-        backgroundColor: states.isFocused ? "#3f3f46" : "none",
-      };
-    },
-    menu: (defaultStyles) => {
-      return {
-        ...defaultStyles,
-        backgroundColor: "none",
-        border: "none",
-        color: "#F2F2F2",
-      };
-    },
-  };
-
-  const modelOptions: Options[] = [
-    {
-      value: "llama3:8b",
-      label: "Llama 3",
-    },
-    {
-      value: "qwen2.5-coder:latest",
-      label: "Qwen 2.5 coder",
-    },
-    {
-      value: "qwen2.5vl:latest",
-      label: "Qwen 2.5 vl",
-    },
-  ];
+  //Global variable
+  globalThis.allowToSend = allowToSend;
+  globalThis.alreadyMsg = alreadyMsg;
+  globalThis.arrowUpColor = arrowUpColor;
+  globalThis.setInputText = setInputText;
+  globalThis.currentModel = currentModel;
+  globalThis.text = text;
 
   useEffect(() => {
     if (!text.current) return;
@@ -98,7 +77,6 @@ export default function ChatPage(): React.ReactElement {
     if (text.current.scrollHeight > 192) return;
     text.current.style.height = "auto";
     text.current.style.height = `${text.current.scrollHeight}px`;
-    allowToSend.current = !!text.current.value.replaceAll(/\s/g, "");
   }, [inputText]);
 
   return (
@@ -109,13 +87,17 @@ export default function ChatPage(): React.ReactElement {
           className="m-3 h-full focus:outline-none"
           styles={customStyles}
           onChange={(value) => {
-            if (!value) return;
+            if (!value || !text.current) return;
+            allowToSend.current = !!text.current.value.replaceAll(/\s/g, "") && !!value.value;
+            arrowUpColor.current = allowToSend.current
+              ? lightColor
+              : darkColor;
             setCurrentModel(value.value);
           }}
           placeholder="Select a model"
         />
       </div>
-      <h1 className="flex justify-center h-15 w-1/2 text-[30px] mt-40">
+      <h1 className="flex justify-center h-15 w-1/2 text-[30px] mt-56">
         How can I help with ?
       </h1>
       <div className="inline-flex flex-col justify-center min-w-1/2 min-h-16 rounded-2xl bg-zinc-700">
@@ -124,9 +106,10 @@ export default function ChatPage(): React.ReactElement {
             ref={text}
             onKeyDown={textAreaKeyHandler}
             onChange={(e) => {
-              arrowUpColor.current = !!e.target.value.replaceAll(/\s/g, "")
-                ? "#F2F2F2"
-                : "#52525c";
+              allowToSend.current = !!e.target.value.replaceAll(/\s/g, "") && !!currentModel;
+              arrowUpColor.current = allowToSend.current
+                ? lightColor
+                : darkColor;
               setInputText(e.target.value);
             }}
             className="resize-none w-full h-full focus:outline-none overflow-hidden"
@@ -140,7 +123,7 @@ export default function ChatPage(): React.ReactElement {
             onClick={runSendButton}
           >
             <ArrowUp
-              fill={arrowUpColor.current ?? ""}
+              fill={arrowUpColor.current}
               className="flex w-full h-full"
             />
           </button>

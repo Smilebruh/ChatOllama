@@ -5,19 +5,21 @@
   "windows": [
     "main"
   ],
- "permissions": [
-    "core:app:default",       
+  "permissions": [
+    "core:app:default",
     "opener:default",
     "websocket:default",
-    "shell:default",       
+    "shell:default",
     {
-      "identifier": "shell:allow-execute",
+      "identifier": "shell:allow-spawn",
       "allow": [
         {
           "name": "binaries/ollama_api",
           "sidecar": true
         }
       ]
-    }
+    },
+    "sql:default",
+    "store:default"
   ]
 }
